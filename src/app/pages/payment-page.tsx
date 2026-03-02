@@ -1,0 +1,379 @@
+import { useState, useEffect } from "react";
+import { Header } from "../components/header";
+import { ContactRMSection } from "../components/contact-rm-section";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import { Building2, Copy, CheckCircle2, Lock } from "lucide-react";
+import { useNavigate, useLocation } from "react-router";
+import { toast } from "sonner";
+import { useInventory } from "../context/inventory-context";
+import axios from "axios";
+
+export function PaymentPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { addBooking } = useInventory();
+  const [utrNumber, setUtrNumber] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+
+  const bookingData = JSON.parse(
+    localStorage.getItem("bookingDetails") || "null",
+  );
+
+  // Check booking data separately without causing redirect loop
+  if (
+    !bookingData ||
+    !bookingData.quantity ||
+    !bookingData.totalAmount ||
+    !bookingData.bookingId
+  ) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center px-6">
+          <h2 className="text-2xl font-bold text-[#1d1d1b] mb-4">
+            Invalid Booking Data
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Please start from the booking page
+          </p>
+          <Button
+            onClick={() => navigate("/booking")}
+            className="bg-[#dfb001] hover:bg-[#c99e00] text-[#1d1d1b]"
+          >
+            Go to Booking Page
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const bankDetails = {
+    accountName: "EMotorad Private Limited",
+    accountNumber: "1234567890",
+    ifscCode: "HDFC0001234",
+    bankName: "HDFC Bank",
+  };
+
+  const handleCopy = (text: string, field: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    toast.success(`${field} copied to clipboard`);
+    setTimeout(() => setCopiedField(null), 2000);
+  };
+
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmitUTR = async () => {
+    if (!utrNumber.trim()) {
+      toast.error("Please enter UTR/Reference number");
+      return;
+    }
+
+    if (utrNumber.trim().length < 8) {
+      toast.error("Please enter a valid UTR/Reference number");
+      return;
+    }
+    localStorage.setItem(
+      "bookingDetails",
+      JSON.stringify({ ...bookingData, utrNumber }),
+    );
+
+    try {
+      const config = {
+        headers: { "Content-Type": "application/json" },
+      };
+      const res = await axios.post(
+        "https://www.emotorad.com/api/payment/preorder/viper",
+        {
+          name: bookingData.franchiseName,
+          email: bookingData.email,
+          phoneNumber: bookingData.phone,
+          city: bookingData.city,
+          state: bookingData.state,
+          pincode: bookingData.pincode,
+          amount: bookingData.totalAmount,
+          bikeInfo: { bikeName: "Viper", qty: bookingData.quantity },
+          utrNumber: utrNumber.trim(),
+          bookingId: bookingData.bookingId,
+          dealerDetails: {
+            dealerName: bookingData.dealerName,
+            fr_id: bookingData.franchiseId,
+          },
+        },
+        config,
+      );
+      if (!res.data.preorder.name) {
+        setError("Server error: order not created. Please try again.");
+        return;
+      }
+      navigate("/confirmation");
+    } catch (error) {
+      setError("Failed to process payment. Please try again.");
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#fafafa]">
+      <Header />
+
+      <main className="py-12">
+        <div className="max-w-[900px] mx-auto px-6">
+          <div className="mb-8">
+            <h1 className="text-2xl font-bold text-[#1d1d1b] mb-2">
+              Complete Your Payment
+            </h1>
+            <p className="text-gray-600">
+              Transfer the amount via NEFT/RTGS to the bank details below
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Bank Details - Left Side */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Payment Instructions */}
+              <div className="bg-gradient-to-r from-[#dfb001]/10 to-transparent border border-[#dfb001] rounded-2xl p-6">
+                <div className="flex items-start gap-4">
+                  <div>
+                    <h3 className="font-bold text-lg text-[#1d1d1b] mb-2">
+                      Payment Instructions
+                    </h3>
+                    <ol className="text-sm text-gray-700 space-y-1 list-decimal list-inside">
+                      <li>
+                        Transfer ₹
+                        {bookingData.totalAmount.toLocaleString("en-IN")} to the
+                        bank account below
+                      </li>
+                      <li>Use NEFT or RTGS from your bank account</li>
+                      <li>
+                        Save the UTR/Transaction Reference number from your bank
+                      </li>
+                      <li>
+                        Enter the UTR number in the form below to complete
+                        booking
+                      </li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bank Details Card */}
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+                <h2 className="font-semibold text-xl text-[#1d1d1b] mb-6 flex items-center gap-2">
+                  <Building2 className="w-5 h-5 text-[#dfb001]" />
+                  Bank Account Details
+                </h2>
+
+                <div className="space-y-4">
+                  {/* Account Name */}
+                  <div className="bg-[#fafafa] rounded-xl p-4 border border-gray-200">
+                    <Label className="text-xs text-gray-500 uppercase tracking-wide mb-1 block">
+                      Account Name
+                    </Label>
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="font-semibold text-[#1d1d1b]">
+                        {bankDetails.accountName}
+                      </p>
+                      <button
+                        onClick={() =>
+                          handleCopy(bankDetails.accountName, "Account Name")
+                        }
+                        className="text-[#dfb001] hover:text-[#c99e00] transition flex items-center gap-1 text-sm"
+                      >
+                        {copiedField === "Account Name" ? (
+                          <CheckCircle2 className="w-4 h-4" />
+                        ) : (
+                          <Copy className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Account Number */}
+                  <div className="bg-[#fafafa] rounded-xl p-4 border border-gray-200">
+                    <Label className="text-xs text-gray-500 uppercase tracking-wide mb-1 block">
+                      Account Number
+                    </Label>
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="font-semibold text-[#1d1d1b] tracking-wider">
+                        {bankDetails.accountNumber}
+                      </p>
+                      <button
+                        onClick={() =>
+                          handleCopy(
+                            bankDetails.accountNumber,
+                            "Account Number",
+                          )
+                        }
+                        className="text-[#dfb001] hover:text-[#c99e00] transition flex items-center gap-1 text-sm"
+                      >
+                        {copiedField === "Account Number" ? (
+                          <CheckCircle2 className="w-4 h-4" />
+                        ) : (
+                          <Copy className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* IFSC Code */}
+                  <div className="bg-[#fafafa] rounded-xl p-4 border border-gray-200">
+                    <Label className="text-xs text-gray-500 uppercase tracking-wide mb-1 block">
+                      IFSC Code
+                    </Label>
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="font-semibold text-[#1d1d1b] tracking-wider">
+                        {bankDetails.ifscCode}
+                      </p>
+                      <button
+                        onClick={() =>
+                          handleCopy(bankDetails.ifscCode, "IFSC Code")
+                        }
+                        className="text-[#dfb001] hover:text-[#c99e00] transition flex items-center gap-1 text-sm"
+                      >
+                        {copiedField === "IFSC Code" ? (
+                          <CheckCircle2 className="w-4 h-4" />
+                        ) : (
+                          <Copy className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Bank Name & Branch */}
+                  <div className="grid gap-4">
+                    <div className="bg-[#fafafa] rounded-xl p-4 border border-gray-200">
+                      <Label className="text-xs text-gray-500 uppercase tracking-wide mb-1 block">
+                        Bank Name
+                      </Label>
+                      <p className="font-semibold text-[#1d1d1b]">
+                        {bankDetails.bankName}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* UTR Input Section */}
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+                <h2 className="font-semibold text-xl text-[#1d1d1b] mb-4">
+                  Enter UTR/Reference Number
+                </h2>
+                <p className="text-sm text-gray-600 mb-4">
+                  After making the NEFT/RTGS transfer, you will receive a UTR
+                  (Unique Transaction Reference) or Reference number from your
+                  bank. Enter it below to confirm your booking.
+                </p>
+
+                <div className="space-y-4">
+                  <div>
+                    <Label
+                      htmlFor="utr"
+                      className="text-sm font-semibold text-[#1d1d1b] mb-2 block"
+                    >
+                      UTR/Transaction Reference Number *
+                    </Label>
+                    <Input
+                      id="utr"
+                      type="text"
+                      placeholder="e.g., HDFC00123456789"
+                      value={utrNumber}
+                      onChange={(e) => setUtrNumber(e.target.value)}
+                      className="py-6"
+                      maxLength={30}
+                    />
+                    <p className="text-xs text-gray-500 mt-2">
+                      This number is usually 12-22 characters long
+                    </p>
+                  </div>
+
+                  <Button
+                    onClick={handleSubmitUTR}
+                    disabled={!utrNumber.trim() || utrNumber.trim().length < 8}
+                    className="w-full bg-[#dfb001] hover:bg-[#c99e00] text-[#1d1d1b] text-lg py-6 shadow-lg hover:shadow-xl transition-all font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                    size="lg"
+                  >
+                    Confirm Booking
+                  </Button>
+                  {error && (
+                    <p className="text-center text-xs sm:text-sm text-red-500">
+                      {error}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Payment Summary - Right Sidebar */}
+            <div className="lg:col-span-1">
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 sticky top-24">
+                <h2 className="font-semibold text-xl text-[#1d1d1b] mb-4">
+                  Payment Summary
+                </h2>
+
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Product</span>
+                    <span className="font-semibold text-[#1d1d1b]">
+                      EMotorad Viper
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Quantity</span>
+                    <span className="font-semibold text-[#1d1d1b]">
+                      {bookingData.quantity} unit(s)
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Payment Method</span>
+                    <span className="font-semibold text-[#1d1d1b]">
+                      NEFT/RTGS
+                    </span>
+                  </div>
+                  <div className="border-t border-gray-200 pt-3 mt-3">
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold text-[#1d1d1b]">
+                        Amount to Transfer
+                      </span>
+                      <div className="text-right">
+                        <p className="font-bold text-[#dfb001]">
+                          ₹{bookingData.totalAmount.toLocaleString("en-IN")}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-[#fafafa] rounded-xl p-4 border border-gray-200">
+                  <div className="flex items-start gap-2 mb-3">
+                    <Lock className="w-4 h-4 text-[#dfb001] flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-xs font-semibold text-[#1d1d1b] mb-1">
+                        Secure Transaction
+                      </p>
+                      <p className="text-xs text-gray-600">
+                        Your payment will be verified within 24 hours of
+                        receiving the UTR number
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-xs text-blue-800">
+                    <strong>Note:</strong> Please ensure you transfer the exact
+                    amount shown above. Keep the transaction receipt for your
+                    records.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <ContactRMSection />
+    </div>
+  );
+}
