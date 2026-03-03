@@ -76,15 +76,15 @@ export function HeroSection() {
               </p>
               <div className="flex flex-col mb-1 lg:mb-4">
                 <span className="text-gray-400 text-sm lg:text-2xl font-bold line-through">
-                  ₹59,999
+                  ₹55,499
                 </span>
                 <span className="text-[#1d1d1b] text-xl lg:text-4xl font-bold">
-                  ₹54,999
+                  ₹52,999
                 </span>
               </div>
               <div className="flex flex-col lg:flex-row items-start lg:items-center gap-1 lg:gap-2">
                 <span className="bg-[#dfb001]/20 text-[#7a6000] text-[10px] lg:text-xs font-bold px-1.5 py-0.5 lg:px-2 lg:py-1 rounded">
-                  Save ₹5,000
+                  Save ₹2,500
                 </span>
                 <span className="text-gray-500 text-[9px] lg:text-xs whitespace-nowrap">
                   Exclusive dealer rate
@@ -97,7 +97,7 @@ export function HeroSection() {
                 Pre-booking Deadline
               </p>
               <p className="text-white font-bold leading-tight lg:leading-[20px] font-sans text-[13px]">
-                7th March 2026
+                Until Stock Lasts
               </p>
             </div>
 
@@ -141,7 +141,7 @@ export function HeroSection() {
                   Pre-booking Deadline
                 </p>
                 <p className="text-white font-bold leading-tight lg:leading-[20px] font-sans text-[13px]">
-                  7th March 2026
+                  Until Stock Lasts
                 </p>
               </div>
             </div>

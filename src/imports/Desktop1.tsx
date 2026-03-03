@@ -522,7 +522,7 @@ function Paragraph11() {
 function Paragraph12() {
   return (
     <div className="absolute h-[32.004px] left-0 top-[8.79px] w-[98.004px]" data-name="Paragraph">
-      <p className="[text-decoration-skip-ink:none] absolute decoration-solid font-['Inter:Bold',sans-serif] font-bold leading-[32px] left-0 line-through not-italic text-[#99a1af] text-[24px] top-[-0.9px]">₹59,999</p>
+      <p className="[text-decoration-skip-ink:none] absolute decoration-solid font-['Inter:Bold',sans-serif] font-bold leading-[32px] left-0 line-through not-italic text-[#99a1af] text-[24px] top-[-0.9px]">₹55,499</p>
     </div>
   );
 }
@@ -530,7 +530,7 @@ function Paragraph12() {
 function Paragraph13() {
   return (
     <div className="absolute h-[40.005px] left-[109.99px] top-0 w-[147.795px]" data-name="Paragraph">
-      <p className="absolute font-['Inter:Bold',sans-serif] font-bold leading-[40px] left-0 not-italic text-[#014dab] text-[36px] top-[-0.2px]">₹54,999</p>
+      <p className="absolute font-['Inter:Bold',sans-serif] font-bold leading-[40px] left-0 not-italic text-[#014dab] text-[36px] top-[-0.2px]">₹52,999</p>
     </div>
   );
 }
@@ -548,7 +548,7 @@ function Text9() {
   return (
     <div className="bg-[#dcfce7] h-[23.969px] relative rounded-[4px] shrink-0 w-[88.44px]" data-name="Text">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid relative size-full">
-        <p className="absolute font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[16px] left-[7.98px] not-italic text-[#008236] text-[12px] top-[3.98px]">Save ₹5,000</p>
+        <p className="absolute font-['Inter:Semi_Bold',sans-serif] font-semibold leading-[16px] left-[7.98px] not-italic text-[#008236] text-[12px] top-[3.98px]">Save ₹2,500</p>
       </div>
     </div>
   );

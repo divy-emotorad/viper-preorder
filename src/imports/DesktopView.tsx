@@ -28,7 +28,7 @@ function Text() {
   return (
     <div className="h-[32.004px] relative shrink-0 w-[269.819px]" data-name="Text">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-start relative size-full">
-        <p className="[text-decoration-skip-ink:none] decoration-solid flex-[1_0_0] font-['Inter:Bold',sans-serif] font-bold leading-[32px] line-through min-h-px min-w-px not-italic relative text-[#99a1af] text-[24px] whitespace-pre-wrap">₹59,999</p>
+        <p className="[text-decoration-skip-ink:none] decoration-solid flex-[1_0_0] font-['Inter:Bold',sans-serif] font-bold leading-[32px] line-through min-h-px min-w-px not-italic relative text-[#99a1af] text-[24px] whitespace-pre-wrap">₹55,499</p>
       </div>
     </div>
   );
@@ -38,7 +38,7 @@ function Text1() {
   return (
     <div className="h-[40.005px] relative shrink-0 w-[269.819px]" data-name="Text">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid relative size-full">
-        <p className="absolute font-['Inter:Bold',sans-serif] font-bold leading-[40px] left-0 not-italic text-[#1d1d1b] text-[36px] top-[-2.4px]">₹54,999</p>
+        <p className="absolute font-['Inter:Bold',sans-serif] font-bold leading-[40px] left-0 not-italic text-[#1d1d1b] text-[36px] top-[-2.4px]">₹52,999</p>
       </div>
     </div>
   );
@@ -57,7 +57,7 @@ function Text2() {
   return (
     <div className="bg-[rgba(223,176,1,0.2)] h-[23.969px] relative rounded-[4px] shrink-0 w-[83.118px]" data-name="Text">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid relative size-full">
-        <p className="absolute font-['Inter:Bold',sans-serif] font-bold leading-[16px] left-[7.98px] not-italic text-[#7a6000] text-[12px] top-[2.88px]">Save ₹5,000</p>
+        <p className="absolute font-['Inter:Bold',sans-serif] font-bold leading-[16px] left-[7.98px] not-italic text-[#7a6000] text-[12px] top-[2.88px]">Save ₹2,500</p>
       </div>
     </div>
   );

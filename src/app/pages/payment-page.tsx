@@ -4,7 +4,7 @@ import { ContactRMSection } from "../components/contact-rm-section";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { Building2, Copy, CheckCircle2, Lock } from "lucide-react";
+import { Building2, Copy, CheckCircle2, Lock, Clock } from "lucide-react";
 import { useNavigate, useLocation } from "react-router";
 import { toast } from "sonner";
 import { useInventory } from "../context/inventory-context";
@@ -108,12 +108,65 @@ export function PaymentPage() {
         setError("Server error: order not created. Please try again.");
         return;
       }
+      localStorage.removeItem("paymentTimerExpiry");
       navigate("/confirmation");
     } catch (error) {
       setError("Failed to process payment. Please try again.");
     }
   };
+  const [timeLeft, setTimeLeft] = useState<number>(0);
+  const [isExpired, setIsExpired] = useState(false);
 
+  // Timer management
+  useEffect(() => {
+    const TIMER_DURATION = 30 *60 * 1000; // 30 minutes in milliseconds
+    const TIMER_KEY = "paymentTimerExpiry";
+
+    // Initialize or retrieve timer
+    let expiryTime = localStorage.getItem(TIMER_KEY);
+
+    if (!expiryTime) {
+      // Create new timer
+      const newExpiryTime = Date.now() + TIMER_DURATION;
+      localStorage.setItem(TIMER_KEY, newExpiryTime.toString());
+      expiryTime = newExpiryTime.toString();
+    }
+
+    const updateTimer = () => {
+      const now = Date.now();
+      const remaining = parseInt(expiryTime!) - now;
+
+      if (remaining <= 0) {
+        // Timer expired
+        setIsExpired(true);
+        setTimeLeft(0);
+        localStorage.removeItem(TIMER_KEY);
+        localStorage.removeItem("bookingDetails");
+        setTimeout(() => {
+          navigate("/booking");
+        }, 3000);
+      } else {
+        setTimeLeft(Math.floor(remaining / 1000)); // Convert to seconds
+      }
+    };
+
+    // Initial update
+    updateTimer();
+
+    // Update every second
+    const interval = setInterval(updateTimer, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [navigate]);
+
+  // Format time as MM:SS
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
   return (
     <div className="min-h-screen bg-[#fafafa]">
       <Header />
@@ -308,10 +361,41 @@ export function PaymentPage() {
             {/* Payment Summary - Right Sidebar */}
             <div className="lg:col-span-1">
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 sticky top-24">
+                <div
+                  className={`mb-6 p-4 rounded-xl border-2 ${
+                    timeLeft <= 300
+                      ? "bg-red-50 border-red-500"
+                      : "bg-[#dfb001]/10 border-[#dfb001]"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Clock
+                        className={`w-5 h-5 ${timeLeft <= 300 ? "text-red-600" : "text-[#dfb001]"}`}
+                      />
+                      <span
+                        className={`text-sm font-semibold ${timeLeft <= 300 ? "text-red-900" : "text-[#1d1d1b]"}`}
+                      >
+                        {timeLeft <= 300 ? "Hurry Up!" : "Time Remaining"}
+                      </span>
+                    </div>
+                    <div
+                      className={`text-2xl font-bold ${timeLeft <= 300 ? "text-red-600 animate-pulse" : "text-[#dfb001]"}`}
+                    >
+                      {formatTime(timeLeft)}
+                    </div>
+                  </div>
+                  <p
+                    className={`text-xs mt-2 ${timeLeft <= 300 ? "text-red-700" : "text-gray-600"}`}
+                  >
+                    {timeLeft <= 300
+                      ? "Complete payment before time expires"
+                      : "Complete your payment within this time"}
+                  </p>
+                </div>{" "}
                 <h2 className="font-semibold text-xl text-[#1d1d1b] mb-4">
                   Payment Summary
                 </h2>
-
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Product</span>
@@ -344,7 +428,6 @@ export function PaymentPage() {
                     </div>
                   </div>
                 </div>
-
                 <div className="bg-[#fafafa] rounded-xl p-4 border border-gray-200">
                   <div className="flex items-start gap-2 mb-3">
                     <Lock className="w-4 h-4 text-[#dfb001] flex-shrink-0 mt-0.5" />
@@ -359,7 +442,6 @@ export function PaymentPage() {
                     </div>
                   </div>
                 </div>
-
                 <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-xs text-blue-800">
                     <strong>Note:</strong> Please ensure you transfer the exact
