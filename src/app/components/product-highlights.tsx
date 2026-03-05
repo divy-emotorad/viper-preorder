@@ -60,7 +60,7 @@ export function ProductHighlights() {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
       {/* Product Image */}
       <div className="order-2 lg:order-1 relative">
-        <div className="bg-white rounded-2xl p-8 shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] border border-gray-100 relative overflow-hidden">
+        <div className="relative overflow-hidden">
           <img
             src="https://ar-euro.s3.ap-south-1.amazonaws.com/india-webiste-17-02-24/landing+page/viper-suspension.gif"
             alt="Viper E-Bike Details"
