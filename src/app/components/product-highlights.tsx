@@ -62,13 +62,17 @@ export function ProductHighlights() {
       <div className="order-2 lg:order-1 relative">
         <div className="bg-white rounded-2xl p-8 shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] border border-gray-100 relative overflow-hidden">
           <img
-            src="https://ar-euro.s3.ap-south-1.amazonaws.com/india-webiste-17-02-24/landing+page/Comp+2.gif"
+            src="https://ar-euro.s3.ap-south-1.amazonaws.com/india-webiste-17-02-24/landing+page/viper-suspension.gif"
             alt="Viper E-Bike Details"
             className="w-full h-auto rounded-xl relative z-10 object-cover"
           />
           {/* Overlay Texture */}
           <div className="absolute inset-0 z-0 pointer-events-none opacity-50 mix-blend-overlay">
-             <img src={imgOverlay} alt="" className="w-full h-full object-cover" />
+            <img
+              src={imgOverlay}
+              alt=""
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
 
@@ -77,13 +81,27 @@ export function ProductHighlights() {
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 mix-blend-overlay"></div>
           <div className="relative z-10 flex items-start gap-4">
             <div className="w-10 h-10 bg-[#dfb001] rounded-lg flex items-center justify-center flex-shrink-0 shadow-[0_0_15px_rgba(223,176,1,0.3)]">
-              <svg className="w-6 h-6 text-[#1d1d1b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              <svg
+                className="w-6 h-6 text-[#1d1d1b]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
               </svg>
             </div>
             <div>
-              <h4 className="font-['Poppins'] font-bold text-lg text-white mb-1">Advance Mono-Shock Suspension</h4>
-              <p className="font-['Inter'] text-[#dfb001] text-sm font-medium">Best-in-class durability with upto 40mm travel.</p>
+              <h4 className="font-['Poppins'] font-bold text-lg text-white mb-1">
+                Advance Mono-Shock Suspension
+              </h4>
+              <p className="font-['Inter'] text-[#dfb001] text-sm font-medium">
+                Best-in-class durability with upto 40mm travel.
+              </p>
             </div>
           </div>
           <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-[#dfb001]/10 rounded-full blur-2xl group-hover:bg-[#dfb001]/20 transition-all duration-500"></div>

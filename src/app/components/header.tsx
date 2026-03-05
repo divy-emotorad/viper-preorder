@@ -26,7 +26,7 @@ export function Header() {
         </div>
       </header>
       {/* Fixed Announcement Bar */}
-      <div className="sticky top-[60px] z-40 bg-[#dfb001] border-b border-[#c49a00] shadow-md">
+      {/* <div className="sticky top-[60px] z-40 bg-[#dfb001] border-b border-[#c49a00] shadow-md">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-2.5 sm:py-3">
           <div className="flex items-center justify-center gap-2 sm:gap-3">
             <p className="text-[#1d1d1b] text-xs sm:text-sm md:text-base font-semibold text-center">
@@ -35,7 +35,7 @@ export function Header() {
             </p>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

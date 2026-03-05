@@ -7,24 +7,7 @@ import { LiveSellingCounter } from "../components/live-selling-counter";
 import { useEffect, useRef, useState } from "react";
 
 export function HomePage() {
-  const [showMobileCounter, setShowMobileCounter] = useState(false);
-  const highlightsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Show counter when Product Highlights is intersecting or we've scrolled past it
-        setShowMobileCounter(entry.isIntersecting || entry.boundingClientRect.top < 0);
-      },
-      { threshold: 0.1 }
-    );
-
-    if (highlightsRef.current) {
-      observer.observe(highlightsRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
+  const [showMobileCounter, setShowMobileCounter] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -43,7 +26,7 @@ export function HomePage() {
         <HeroSection />
         
         {/* Product Highlights Section */}
-        <div ref={highlightsRef} className="py-16 bg-[#fafafa]">
+        <div className="py-16 bg-[#fafafa]">
           <div className="max-w-[1200px] mx-auto px-6">
             <div className="text-center mb-12">
               <h2 className="text-4xl font-bold text-[#1d1d1b] mb-4">
