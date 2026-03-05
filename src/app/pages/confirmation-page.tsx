@@ -24,6 +24,10 @@ export function ConfirmationPage() {
     setTimeout(() => setShowConfetti(false), 3000);
   }, [navigate]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   if (!bookingDetails) return null;
 
   const dealerName = localStorage.getItem("bookingDetails")

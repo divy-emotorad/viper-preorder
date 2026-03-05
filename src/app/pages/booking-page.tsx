@@ -16,13 +16,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
-import { Minus, Plus, CreditCard, Building2, Shield, Lock, User, ArrowRight, Package, CheckCircle2 } from "lucide-react";
+import {
+  Minus,
+  Plus,
+  CreditCard,
+  Building2,
+  Shield,
+  Lock,
+  User,
+  ArrowRight,
+  Package,
+  CheckCircle2,
+} from "lucide-react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { useInventory } from "../context/inventory-context";
 import viperImage from "../../assets/770e77c21b331603db955be2300f1c7fa0652347.png";
 import axios from "axios";
 import { Combobox } from "../components/ui/combobox";
+import { color } from "motion/react";
 
 interface DealerData {
   franchise_code: string;
@@ -30,17 +42,24 @@ interface DealerData {
   fr_id: string;
 }
 
-
 export function BookingPage() {
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [selectedBank, setSelectedBank] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const { availableUnits, addBooking } = useInventory();
+  const { availableUnits } = useInventory();
   const [bookingId, setBookingId] = useState("");
+  const [selectedColor, setSelectedColor] = useState<
+    "Stealth Black" | "Apex Blue"
+  >("Stealth Black");
 
-  const unitPrice = 54999;
+    const colors = [
+      { name: "Stealth Black", hex: "#1d1d1b", displayColor: "#1d1d1b" },
+      { name: "Apex Blue", hex: "#1e40af", displayColor: "#1e40af" },
+    ];
+
+  const unitPrice = 52999;
   const totalAmount = unitPrice * quantity;
 
   const handleQuantityChange = (delta: number) => {
@@ -72,6 +91,9 @@ export function BookingPage() {
     city: "",
     state: "",
     quantity: "",
+    selectedColor: localStorage.getItem("bookingDetails")
+      ? JSON.parse(localStorage.getItem("bookingDetails")).color
+      : "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -119,10 +141,6 @@ export function BookingPage() {
       document.body.appendChild(script);
     });
   };
-
-  useEffect(() => {
-    loadScript("https://checkout.razorpay.com/v1/checkout.js");
-  });
 
   // Fetch city and state from pincode
   useEffect(() => {
@@ -287,7 +305,7 @@ export function BookingPage() {
     }
   };
 
-  const handleProceedToPayment = () => {
+  const handleProceedToPayment = async() => {
     if (!validateForm()) {
       return;
     }
@@ -297,29 +315,67 @@ export function BookingPage() {
     }
 
     setIsProcessing(true);
-
-    // Store booking details
-    localStorage.setItem(
-      "bookingDetails",
-      JSON.stringify({
-        quantity,
-        totalAmount,
-        bookingId: "VPR" + Date.now(),
-        date: new Date().toISOString(),
-        dealerName: formData.dealerName,
-        franchiseName: formData.franchiseName,
-        pincode: formData.pincode,
+    try {
+      const config = {
+        headers: { "Content-Type": "application/json" },
+      };
+      const payload = {
+        name: formData.franchiseName,
         email: formData.email,
-        phone: formData.phone,
-        franchiseId: formData.franchiseId,
+        phoneNumber: formData.phone,
         city: formData.city,
         state: formData.state,
-      }),
-    );
+        pincode: formData.pincode,
+        amount: totalAmount,
+        bikeInfo: { bikeName: "Viper", qty: quantity, color: selectedColor },
+        bookingId: "VPR" + Date.now(),
+        dealerDetails: {
+          dealerName: formData.dealerName,
+          fr_id: formData.franchiseId,
+        },
+      };
+      const res = await axios.post(
+        "https://www.emotorad.com/api/payment/preorder/viper",
+        payload,
+        config,
+      );
+      if (!res.data.preorder.name) {
+        toast.error(`Server error: order not created. Please try again.`);
+        return;
+      }
+      // Store booking details
+      localStorage.setItem(
+        "bookingDetails",
+        JSON.stringify({
+          quantity,
+          totalAmount,
+          bookingId: payload.bookingId,
+          date: new Date().toISOString(),
+          dealerName: formData.dealerName,
+          franchiseName: formData.franchiseName,
+          pincode: formData.pincode,
+          email: formData.email,
+          phone: formData.phone,
+          franchiseId: formData.franchiseId,
+          city: formData.city,
+          state: formData.state,
+          databaseId: res.data.preorder._id,
+          color: selectedColor,
+        }),
+      );
+      localStorage.removeItem("paymentTimerExpiry");
+      navigate("/confirmation");
+    } catch (error) {
+      toast.error("Failed to process payment", error.message);
+    }
     navigate(
       `/payment?id=${localStorage.getItem("bookingDetails") ? JSON.parse(localStorage.getItem("bookingDetails")).bookingId : ""}`,
     );
   };
+
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
@@ -364,42 +420,6 @@ export function BookingPage() {
                       High-performance electric bike
                     </p>
 
-                    {/* Quick Key Specs */}
-                    <div className="grid grid-cols-2 gap-3 mb-4 pb-4 border-b border-gray-200">
-                      <div className="flex flex-col">
-                        <span className="text-[10px] text-gray-500 uppercase tracking-wide">
-                          Motor
-                        </span>
-                        <span className="text-xs font-semibold text-[#1d1d1b]">
-                          48V 250W
-                        </span>
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-[10px] text-gray-500 uppercase tracking-wide">
-                          Battery
-                        </span>
-                        <span className="text-xs font-semibold text-[#1d1d1b]">
-                          48V 15.6Ah
-                        </span>
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-[10px] text-gray-500 uppercase tracking-wide">
-                          Brakes
-                        </span>
-                        <span className="text-xs font-semibold text-[#1d1d1b]">
-                          Hydraulic Disc
-                        </span>
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-[10px] text-gray-500 uppercase tracking-wide">
-                          Drivetrain
-                        </span>
-                        <span className="text-xs font-semibold text-[#1d1d1b]">
-                          Shimano 7-Speed
-                        </span>
-                      </div>
-                    </div>
-
                     <div className="flex flex-col md:flex-row md:items-center gap-2 justify-between">
                       <div>
                         <p className="text-sm text-gray-600">Price per unit</p>
@@ -440,6 +460,40 @@ export function BookingPage() {
                             <Plus className="h-4 w-4" />
                           </Button>
                         </div>
+                      </div>
+                    </div>
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                      <Label className="text-sm text-gray-600 mb-3 block">
+                        Select Color:
+                      </Label>
+                      <div className="flex gap-2">
+                        {colors.map((color) => (
+                          <button
+                            key={color.name}
+                            onClick={() =>
+                              setSelectedColor(
+                                color.name as "Stealth Black" | "Apex Blue",
+                              )
+                            }
+                            className={`flex-1 group relative rounded-xl border-2 transition-all overflow-hidden ${
+                              selectedColor === color.name
+                                ? "border-[#dfb001] shadow-md"
+                                : "border-gray-200 hover:border-gray-300"
+                            }`}
+                          >
+                            <div className="p-3 flex flex-col items-center gap-2">
+                              <span
+                                className={`text-xs font-semibold transition-colors ${
+                                  selectedColor === color.name
+                                    ? "text-[#dfb001]"
+                                    : "text-gray-700"
+                                }`}
+                              >
+                                {color.name}
+                              </span>
+                            </div>
+                          </button>
+                        ))}
                       </div>
                     </div>
                   </div>

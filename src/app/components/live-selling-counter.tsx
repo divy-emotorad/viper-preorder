@@ -95,10 +95,7 @@ export function LiveSellingCounter({ className }: { className?: string }) {
 
           <div className="flex items-center gap-2 mt-1.5">
             <p className="text-[9px] text-white/70">{percentageSold}% Sold</p>
-            <span className="text-[9px] text-white/60">•</span>
-            <p className="text-[9px] text-[#dfb001] font-medium">
-              {recentSales} sold in 2hrs
-            </p>
+            
           </div>
         </div>
       </div>
@@ -173,12 +170,7 @@ export function LiveSellingCounter({ className }: { className?: string }) {
                 transition={{ duration: 0.5 }}
               />
             </div>
-            <p className="text-[10px] text-white/60 mt-1.5 text-center">
-              <span className="text-[#dfb001] font-semibold">
-                {recentSales} cycles
-              </span>{" "}
-              sold in last 2hrs
-            </p>
+            
           </div>
 
           {/* Right: Countdown */}
@@ -284,10 +276,7 @@ export function LiveSellingCounter({ className }: { className?: string }) {
                 <p className="text-[9px] text-white/70">
                   {percentageSold}% Sold
                 </p>
-                <span className="text-[9px] text-white/60">•</span>
-                <p className="text-[9px] text-[#dfb001] font-medium">
-                  {recentSales} sold in 2hrs
-                </p>
+                
               </div>
             </div>
           </div>

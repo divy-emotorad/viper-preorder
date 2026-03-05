@@ -3,11 +3,10 @@ import { Package, Users } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export function InventoryTicker() {
-  const { availableUnits, totalUnits, recentBookings } = useInventory();
+  const { availableUnits, totalUnits } = useInventory();
   
   const soldUnits = totalUnits - availableUnits;
   const percentageSold = ((soldUnits / totalUnits) * 100).toFixed(0);
-  const totalDealers = recentBookings.length;
 
   return (
     <div className="w-full bg-[#1d1d1b] shadow-lg border-b border-[#dfb001]/30">

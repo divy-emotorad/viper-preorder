@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { Header } from "../components/header";
 import { ContactRMSection } from "../components/contact-rm-section";
 import { Button } from "../components/ui/button";
@@ -13,7 +13,6 @@ import axios from "axios";
 export function PaymentPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { addBooking } = useInventory();
   const [utrNumber, setUtrNumber] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
@@ -23,11 +22,31 @@ export function PaymentPage() {
   );
 
   // Check booking data separately without causing redirect loop
-  if (
+  if (bookingData.paymentStatus) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center px-6">
+          <h2 className="text-2xl font-bold text-[#1d1d1b] mb-4">
+            Payment Already Processed
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Please start new booking if you want to purchase another unit.
+          </p>
+          <Button
+            onClick={() => navigate("/booking")}
+            className="bg-[#dfb001] hover:bg-[#c99e00] text-[#1d1d1b]"
+          >
+            Go to Booking Page
+          </Button>
+        </div>
+      </div>
+    );
+  } else if (
     !bookingData ||
     !bookingData.quantity ||
     !bookingData.totalAmount ||
-    !bookingData.bookingId
+    !bookingData.bookingId ||
+    !bookingData.databaseId
   ) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -75,43 +94,33 @@ export function PaymentPage() {
       toast.error("Please enter a valid UTR/Reference number");
       return;
     }
-    localStorage.setItem(
-      "bookingDetails",
-      JSON.stringify({ ...bookingData, utrNumber }),
-    );
-
     try {
       const config = {
         headers: { "Content-Type": "application/json" },
       };
       const res = await axios.post(
-        "https://www.emotorad.com/api/payment/preorder/viper",
+        `https://www.emotorad.com/api/payment/preorder/viper?id=${bookingData.databaseId}`,
         {
-          name: bookingData.franchiseName,
-          email: bookingData.email,
-          phoneNumber: bookingData.phone,
-          city: bookingData.city,
-          state: bookingData.state,
-          pincode: bookingData.pincode,
-          amount: bookingData.totalAmount,
-          bikeInfo: { bikeName: "Viper", qty: bookingData.quantity },
           utrNumber: utrNumber.trim(),
-          bookingId: bookingData.bookingId,
-          dealerDetails: {
-            dealerName: bookingData.dealerName,
-            fr_id: bookingData.franchiseId,
-          },
         },
         config,
       );
-      if (!res.data.preorder.name) {
-        setError("Server error: order not created. Please try again.");
+      if (!res.data.preorder) {
+        toast.error(`Server error: order not created. Please try again.`);
         return;
       }
+      localStorage.setItem(
+        "bookingDetails",
+        JSON.stringify({
+          ...bookingData,
+          paymentStatus: true,
+          utrNumber: utrNumber.trim(),
+        }),
+      );
       localStorage.removeItem("paymentTimerExpiry");
       navigate("/confirmation");
     } catch (error) {
-      setError("Failed to process payment. Please try again.");
+      toast.error("Failed to process payment", error.message);
     }
   };
   const [timeLeft, setTimeLeft] = useState<number>(0);
@@ -119,7 +128,7 @@ export function PaymentPage() {
 
   // Timer management
   useEffect(() => {
-    const TIMER_DURATION = 30 *60 * 1000; // 30 minutes in milliseconds
+    const TIMER_DURATION = 30 * 60 * 1000; // 30 minutes in milliseconds
     const TIMER_KEY = "paymentTimerExpiry";
 
     // Initialize or retrieve timer
@@ -167,6 +176,10 @@ export function PaymentPage() {
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div className="min-h-screen bg-[#fafafa]">
       <Header />
@@ -186,7 +199,7 @@ export function PaymentPage() {
             {/* Bank Details - Left Side */}
             <div className="lg:col-span-2 space-y-6">
               {/* Payment Instructions */}
-              <div className="bg-gradient-to-r from-[#dfb001]/10 to-transparent border border-[#dfb001] rounded-2xl p-6">
+              {/* <div className="bg-gradient-to-r from-[#dfb001]/10 to-transparent border border-[#dfb001] rounded-2xl p-6">
                 <div className="flex items-start gap-4">
                   <div>
                     <h3 className="font-bold text-lg text-[#1d1d1b] mb-2">
@@ -208,6 +221,97 @@ export function PaymentPage() {
                       </li>
                     </ol>
                   </div>
+                </div>
+              </div> */}
+
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 md:hidden">
+                <div
+                  className={`mb-6 p-4 rounded-xl border-2 ${
+                    timeLeft <= 300
+                      ? "bg-red-50 border-red-500"
+                      : "bg-[#dfb001]/10 border-[#dfb001]"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Clock
+                        className={`w-5 h-5 ${timeLeft <= 300 ? "text-red-600" : "text-[#dfb001]"}`}
+                      />
+                      <span
+                        className={`text-sm font-semibold ${timeLeft <= 300 ? "text-red-900" : "text-[#1d1d1b]"}`}
+                      >
+                        {timeLeft <= 300 ? "Hurry Up!" : "Time Remaining"}
+                      </span>
+                    </div>
+                    <div
+                      className={`text-2xl font-bold ${timeLeft <= 300 ? "text-red-600 animate-pulse" : "text-[#dfb001]"}`}
+                    >
+                      {formatTime(timeLeft)}
+                    </div>
+                  </div>
+                  <p
+                    className={`text-xs mt-2 ${timeLeft <= 300 ? "text-red-700" : "text-gray-600"}`}
+                  >
+                    {timeLeft <= 300
+                      ? "Complete payment before time expires"
+                      : "Complete your payment within this time"}
+                  </p>
+                </div>{" "}
+                <h2 className="font-semibold text-xl text-[#1d1d1b] mb-4">
+                  Payment Summary
+                </h2>
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Product</span>
+                    <span className="font-semibold text-[#1d1d1b]">
+                      EMotorad Viper
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Quantity</span>
+                    <span className="font-semibold text-[#1d1d1b]">
+                      {bookingData.quantity} unit(s)
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Payment Method</span>
+                    <span className="font-semibold text-[#1d1d1b]">
+                      NEFT/RTGS
+                    </span>
+                  </div>
+                  <div className="border-t border-gray-200 pt-3 mt-3">
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold text-[#1d1d1b]">
+                        Amount to Transfer
+                      </span>
+                      <div className="text-right">
+                        <p className="font-bold text-[#dfb001]">
+                          ₹{bookingData.totalAmount.toLocaleString("en-IN")}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-[#fafafa] rounded-xl p-4 border border-gray-200">
+                  <div className="flex items-start gap-2 mb-3">
+                    <Lock className="w-4 h-4 text-[#dfb001] flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-xs font-semibold text-[#1d1d1b] mb-1">
+                        Secure Transaction
+                      </p>
+                      <p className="text-xs text-gray-600">
+                        Your payment will be verified within 24 hours of
+                        receiving the UTR number
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-xs text-blue-800">
+                    <strong>Note:</strong> Please ensure you transfer the exact
+                    amount shown above. Keep the transaction receipt for your
+                    records.
+                  </p>
                 </div>
               </div>
 
@@ -360,7 +464,7 @@ export function PaymentPage() {
 
             {/* Payment Summary - Right Sidebar */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 sticky top-24">
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 sticky top-24 md:block hidden">
                 <div
                   className={`mb-6 p-4 rounded-xl border-2 ${
                     timeLeft <= 300
