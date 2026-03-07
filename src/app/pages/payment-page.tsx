@@ -69,10 +69,10 @@ export function PaymentPage() {
   }
 
   const bankDetails = {
-    accountName: "EMotorad Private Limited",
-    accountNumber: "1234567890",
-    ifscCode: "HDFC0001234",
-    bankName: "HDFC Bank",
+    accountName: "INKODOP TECHNOLOGIES PRIVATE LIMITED",
+    accountNumber: "336305500250",
+    ifscCode: "ICIC0003363",
+    bankName: "ICICI Bank",
   };
 
   const handleCopy = (text: string, field: string) => {
@@ -434,7 +434,7 @@ export function PaymentPage() {
                     <Input
                       id="utr"
                       type="text"
-                      placeholder="e.g., HDFC00123456789"
+                      placeholder="e.g., ICICN21060800001"
                       value={utrNumber}
                       onChange={(e) => setUtrNumber(e.target.value)}
                       className="py-6"
