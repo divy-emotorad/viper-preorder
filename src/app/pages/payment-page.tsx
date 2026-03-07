@@ -22,7 +22,7 @@ export function PaymentPage() {
   );
 
   // Check booking data separately without causing redirect loop
-  if (bookingData.paymentStatus) {
+  if (bookingData?.paymentStatus) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center px-6">
