@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { Header } from "../components/header";
 import { ContactRMSection } from "../components/contact-rm-section";
 import {
@@ -45,27 +45,44 @@ interface DealerData {
 export function BookingPage() {
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
+  const [quantityBlack, setQuantityBlack] = useState(1);
+  const [quantityBlue, setQuantityBlue] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [selectedBank, setSelectedBank] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const { availableUnits } = useInventory();
   const [bookingId, setBookingId] = useState("");
+  const [discount, setDiscount] = useState(3000);
   const [selectedColor, setSelectedColor] = useState<
     "Stealth Black" | "Apex Blue"
   >("Stealth Black");
 
-    const colors = [
-      { name: "Stealth Black", hex: "#1d1d1b", displayColor: "#1d1d1b" },
-      { name: "Apex Blue", hex: "#1e40af", displayColor: "#1e40af" },
-    ];
+  const colors = [
+    { name: "Stealth Black", hex: "#1d1d1b", displayColor: "#1d1d1b" },
+    { name: "Apex Blue", hex: "#1e40af", displayColor: "#1e40af" },
+  ];
 
-  const unitPrice = 52999;
-  const totalAmount = unitPrice * quantity;
+  const unitPrice = 55999 - discount;
+  const totalAmount = unitPrice * (quantityBlack + quantityBlue);
 
   const handleQuantityChange = (delta: number) => {
     const newQuantity = quantity + delta;
     if (newQuantity >= 1) {
       setQuantity(newQuantity);
+    }
+  };
+
+  const handleQuantityChangeBlack = (delta: number) => {
+    const newQuantity = quantityBlack + delta;
+    if (newQuantity >= 0) {
+      setQuantityBlack(newQuantity);
+    }
+  };
+
+  const handleQuantityChangeBlue = (delta: number) => {
+    const newQuantity = quantityBlue + delta;
+    if (newQuantity >= 0) {
+      setQuantityBlue(newQuantity);
     }
   };
 
@@ -294,7 +311,16 @@ export function BookingPage() {
   const handleComboboxChange = (value: string) => {
     setFormData((prev) => ({ ...prev, franchiseName: value }));
     const fr = franchises.find((f) => f.dealer_name === value);
-    setFormData((prev) => ({ ...prev, franchiseId: fr?.fr_id || "" }));
+    setFormData((prev) => ({
+      ...prev,
+      franchiseId: fr?.fr_id || "",
+      dealerName: fr?.poc_name || "",
+      pincode: fr?.pincode || "",
+      email: fr?.email || "",
+      phone: fr?.mobile || "",
+    }));
+    setDiscount(fr?.os > 0 ? 0 : 3000);
+    console.log(fr);
     // Clear validation error
     if (validationErrors.franchiseName) {
       setValidationErrors((prev) => {
@@ -305,7 +331,7 @@ export function BookingPage() {
     }
   };
 
-  const handleProceedToPayment = async() => {
+  const handleProceedToPayment = async () => {
     if (!validateForm()) {
       return;
     }
@@ -327,7 +353,16 @@ export function BookingPage() {
         state: formData.state,
         pincode: formData.pincode,
         amount: totalAmount,
-        bikeInfo: { bikeName: "Viper", qty: quantity, color: selectedColor },
+        bikeInfo: {
+          bikeName: "Viper",
+          orderInfo: [
+            { qty: quantityBlack, color: "Stealth Black" },
+            {
+              qty: quantityBlue,
+              color: "Apex Blue",
+            },
+          ],
+        },
         bookingId: "VPR" + Date.now(),
         dealerDetails: {
           dealerName: formData.dealerName,
@@ -347,7 +382,7 @@ export function BookingPage() {
       localStorage.setItem(
         "bookingDetails",
         JSON.stringify({
-          quantity,
+          quantity: quantityBlack+quantityBlue,
           totalAmount,
           bookingId: payload.bookingId,
           date: new Date().toISOString(),
@@ -360,7 +395,6 @@ export function BookingPage() {
           city: formData.city,
           state: formData.state,
           databaseId: res.data.preorder._id,
-          color: selectedColor,
         }),
       );
       localStorage.removeItem("paymentTimerExpiry");
@@ -373,9 +407,9 @@ export function BookingPage() {
     );
   };
 
-    useEffect(() => {
-      window.scrollTo(0, 0);
-    }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
@@ -404,7 +438,7 @@ export function BookingPage() {
                 <h2 className="font-semibold text-xl text-[#1d1d1b] mb-4">
                   Booking Summary
                 </h2>
-                <div className="flex flex-col md:flex-row items-start gap-6">
+                <div className="flex flex-col md:flex-row md:items-start gap-6 mb-10">
                   <div className="w-32 h-32 bg-black rounded-xl overflow-hidden flex-shrink-0 border border-gray-200">
                     <img
                       src={viperImage}
@@ -416,9 +450,7 @@ export function BookingPage() {
                     <h3 className="font-semibold text-lg text-[#1d1d1b] mb-1">
                       EMotorad Viper
                     </h3>
-                    <p className="text-sm text-gray-600 mb-4">
-                      High-performance electric bike
-                    </p>
+                    <p className="text-sm text-gray-600 mb-4">Stealth Black</p>
 
                     <div className="flex flex-col md:flex-row md:items-center gap-2 justify-between">
                       <div>
@@ -436,17 +468,17 @@ export function BookingPage() {
                             variant="outline"
                             size="icon"
                             className="h-8 w-8"
-                            onClick={() => handleQuantityChange(-1)}
-                            disabled={quantity <= 1}
+                            onClick={() => handleQuantityChangeBlack(-1)}
+                            disabled={quantityBlack <= 0}
                           >
                             <Minus className="h-4 w-4" />
                           </Button>
                           <Input
                             type="text"
-                            value={quantity}
+                            value={quantityBlack}
                             onChange={(e) => {
                               const val = parseInt(e.target.value);
-                              if (val >= 1) setQuantity(val);
+                              if (val >= 0) setQuantityBlack(val);
                             }}
                             className="w-16 text-center"
                             readOnly
@@ -455,14 +487,14 @@ export function BookingPage() {
                             variant="outline"
                             size="icon"
                             className="h-8 w-8"
-                            onClick={() => handleQuantityChange(1)}
+                            onClick={() => handleQuantityChangeBlack(1)}
                           >
                             <Plus className="h-4 w-4" />
                           </Button>
                         </div>
                       </div>
                     </div>
-                    <div className="mt-4 pt-4 border-t border-gray-200">
+                    {/* <div className="mt-4 pt-4 border-t border-gray-200">
                       <Label className="text-sm text-gray-600 mb-3 block">
                         Select Color:
                       </Label>
@@ -495,7 +527,99 @@ export function BookingPage() {
                           </button>
                         ))}
                       </div>
+                    </div> */}
+                  </div>
+                </div>
+                <div className="flex flex-col md:flex-row md:items-start gap-6">
+                  <div className="w-32 h-32 bg-black rounded-xl overflow-hidden flex-shrink-0 border border-gray-200">
+                    <img
+                      src={viperImage}
+                      alt="Viper E-Bike"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-lg text-[#1d1d1b] mb-1">
+                      EMotorad Viper
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-4">Apex Blue</p>
+
+                    <div className="flex flex-col md:flex-row md:items-center gap-2 justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600">Price per unit</p>
+                        <p className="text-xl font-bold text-[#dfb001]">
+                          ₹{unitPrice.toLocaleString("en-IN")}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Label className="text-sm text-gray-600">
+                          Quantity:
+                        </Label>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => handleQuantityChangeBlue(-1)}
+                            disabled={quantityBlue <= 0}
+                          >
+                            <Minus className="h-4 w-4" />
+                          </Button>
+                          <Input
+                            type="text"
+                            value={quantityBlue}
+                            onChange={(e) => {
+                              const val = parseInt(e.target.value);
+                              if (val >= 0) setQuantityBlue(val);
+                            }}
+                            className="w-16 text-center"
+                            readOnly
+                          />
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => handleQuantityChangeBlue(1)}
+                          >
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
                     </div>
+                    {/* <div className="mt-4 pt-4 border-t border-gray-200">
+                      <Label className="text-sm text-gray-600 mb-3 block">
+                        Select Color:
+                      </Label>
+                      <div className="flex gap-2">
+                        {colors.map((color) => (
+                          <button
+                            key={color.name}
+                            onClick={() =>
+                              setSelectedColor(
+                                color.name as "Stealth Black" | "Apex Blue",
+                              )
+                            }
+                            className={`flex-1 group relative rounded-xl border-2 transition-all overflow-hidden ${
+                              selectedColor === color.name
+                                ? "border-[#dfb001] shadow-md"
+                                : "border-gray-200 hover:border-gray-300"
+                            }`}
+                          >
+                            <div className="p-3 flex flex-col items-center gap-2">
+                              <span
+                                className={`text-xs font-semibold transition-colors ${
+                                  selectedColor === color.name
+                                    ? "text-[#dfb001]"
+                                    : "text-gray-700"
+                                }`}
+                              >
+                                {color.name}
+                              </span>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
@@ -737,10 +861,17 @@ export function BookingPage() {
                       ₹{unitPrice.toLocaleString("en-IN")}
                     </span>
                   </div>
+                  {!discount && (
+                    <div className="text-center">
+                      <small className="text-red-500">
+                        No discount applicable on unit price with 90+OS
+                      </small>
+                    </div>
+                  )}
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Quantity</span>
                     <span className="font-semibold text-[#1d1d1b]">
-                      {quantity} unit(s)
+                      {quantityBlack + quantityBlue} unit(s)
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
@@ -781,7 +912,8 @@ export function BookingPage() {
                       formData.email &&
                       formData.pincode &&
                       formData.city &&
-                      formData.state
+                      formData.state &&
+                      quantityBlack + quantityBlue >= 1
                     )
                   }
                   className="w-full bg-[#dfb001] hover:bg-[#c99e00] text-[#1d1d1b] py-6 shadow-lg hover:shadow-xl transition-all font-bold"
