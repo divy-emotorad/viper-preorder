@@ -32,6 +32,8 @@ import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { useInventory } from "../context/inventory-context";
 import viperImage from "../../assets/770e77c21b331603db955be2300f1c7fa0652347.png";
+import viperBlack from "../../assets/viperBlack.jpeg";
+import viperBlue from "../../assets/viperBlue.jpeg"; 
 import axios from "axios";
 import { Combobox } from "../components/ui/combobox";
 import { color } from "motion/react";
@@ -319,8 +321,8 @@ export function BookingPage() {
       email: fr?.email || "",
       phone: fr?.mobile || "",
     }));
-    setDiscount(fr?.os > 0 ? 0 : 3000);
-    console.log(fr);
+    // setDiscount(fr?.os > 0 ? 0 : 3000);
+    // console.log(fr);
     // Clear validation error
     if (validationErrors.franchiseName) {
       setValidationErrors((prev) => {
@@ -382,7 +384,7 @@ export function BookingPage() {
       localStorage.setItem(
         "bookingDetails",
         JSON.stringify({
-          quantity: quantityBlack+quantityBlue,
+          quantity: quantityBlack + quantityBlue,
           totalAmount,
           bookingId: payload.bookingId,
           date: new Date().toISOString(),
@@ -441,7 +443,7 @@ export function BookingPage() {
                 <div className="flex flex-col md:flex-row md:items-start gap-6 mb-10">
                   <div className="w-32 h-32 bg-black rounded-xl overflow-hidden flex-shrink-0 border border-gray-200">
                     <img
-                      src={viperImage}
+                      src={viperBlack}
                       alt="Viper E-Bike"
                       className="w-full h-full object-cover"
                     />
@@ -533,7 +535,7 @@ export function BookingPage() {
                 <div className="flex flex-col md:flex-row md:items-start gap-6">
                   <div className="w-32 h-32 bg-black rounded-xl overflow-hidden flex-shrink-0 border border-gray-200">
                     <img
-                      src={viperImage}
+                      src={viperBlue}
                       alt="Viper E-Bike"
                       className="w-full h-full object-cover"
                     />
@@ -861,13 +863,13 @@ export function BookingPage() {
                       ₹{unitPrice.toLocaleString("en-IN")}
                     </span>
                   </div>
-                  {!discount && (
+                  {/*                   {!discount && (
                     <div className="text-center">
                       <small className="text-red-500">
                         No discount applicable on unit price with 90+OS
                       </small>
                     </div>
-                  )}
+                  )} */}
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Quantity</span>
                     <span className="font-semibold text-[#1d1d1b]">
