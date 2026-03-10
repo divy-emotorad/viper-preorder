@@ -52,7 +52,7 @@ export function BookingPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const { availableUnits } = useInventory();
   const [bookingId, setBookingId] = useState("");
-  const [discount, setDiscount] = useState(3000);
+  const [discount, setDiscount] = useState(2500);
   const [selectedColor, setSelectedColor] = useState<
     "Stealth Black" | "Apex Blue"
   >("Stealth Black");
@@ -62,7 +62,7 @@ export function BookingPage() {
     { name: "Apex Blue", hex: "#1e40af", displayColor: "#1e40af" },
   ];
 
-  const unitPrice = 55999 - discount;
+  const unitPrice = 55499 - discount;
   const totalAmount = unitPrice * (quantityBlack + quantityBlue);
 
   const handleQuantityChange = (delta: number) => {
