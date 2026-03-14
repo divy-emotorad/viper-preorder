@@ -33,10 +33,11 @@ import { toast } from "sonner";
 import { useInventory } from "../context/inventory-context";
 import viperImage from "../../assets/770e77c21b331603db955be2300f1c7fa0652347.png";
 import viperBlack from "../../assets/viperBlack.jpeg";
-import viperBlue from "../../assets/viperBlue.jpeg"; 
+import viperBlue from "../../assets/viperBlue.jpeg";
 import axios from "axios";
 import { Combobox } from "../components/ui/combobox";
 import { color } from "motion/react";
+import { dealerWithOS } from "../data/dealerOS";
 
 interface DealerData {
   franchise_code: string;
@@ -313,6 +314,14 @@ export function BookingPage() {
   const handleComboboxChange = (value: string) => {
     setFormData((prev) => ({ ...prev, franchiseName: value }));
     const fr = franchises.find((f) => f.dealer_name === value);
+    // if(dealerWithOS.includes(fr.dealer_name)){
+    //   setDiscount(0)
+    // }
+    console.log(fr);
+    const dealerName = fr?.dealer_name || "";
+    if (dealerWithOS.includes(dealerName)) {
+      setDiscount(0);
+    }
     setFormData((prev) => ({
       ...prev,
       franchiseId: fr?.fr_id || "",

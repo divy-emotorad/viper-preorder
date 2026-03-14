@@ -74,14 +74,14 @@ export function Specifications() {
       ),
       specs: [
         { label: "Motor", value: "EMotorad 48V 250W Rear Hub Motor" },
-        { label: "Battery", value: "48V 15.6Ah (750) Li-Ion Removable Battery" },
+        { label: "Battery", value: "48V 15.6Ah (750Wh) Li-Ion Removable Battery" },
         { label: "Display", value: "Cluster C9 Colour Display" },
         { label: "Pedal Assist", value: "5 Levels of Pedal Assist" },
         { label: "E-brakes", value: "Auto Cut-off E-Brakes" },
         { label: "Light", value: "Front and Rear Light with Integrated horn" },
         { label: "Charger", value: "2A Fast Charger" },
         { label: "Charging Time", value: "5 Hrs" },
-        { label: "Range", value: "105 kms" },
+        { label: "Maximum Range", value: "105 kms on PAS | 80 kms on Throttle" },
       ],
     },
     {
@@ -94,7 +94,7 @@ export function Specifications() {
       specs: [
         { label: "Frame", value: "5 years" },
         { label: "Motor", value: "2 years" },
-        { label: "Hub motor, Controller", value: "1 year" },
+        { label: "Controller", value: "1 year" },
         { label: "Electronic handlebar controls and electrical connections, Battery Charger", value: "6 Months" },
         { label: "Paintwork (excluding accidental or deliberate damage)", value: "1 year" },
         { label: "Lights and lighting system", value: "6 Months" },
@@ -124,9 +124,10 @@ export function Specifications() {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-['Poppins'] font-bold text-[#1d1d1b] mb-4">
             <span className="text-[#dfb001]">Technical Specifications</span>
           </h2>
-          <p className="text-base md:text-lg font-['Inter'] text-[#4a5565] max-w-2xl mx-auto">
+          <p className="text-base md:text-lg font-['Inter'] text-[#4a5565] max-w-2xl mx-auto mb-3">
             Professional-grade e-bike engineered for performance, reliability, and dealer confidence
           </p>
+          <small>*All specs are tentative & subject to change</small>
         </div>
 
         {/* Specifications Grid */}
