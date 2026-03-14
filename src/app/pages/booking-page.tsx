@@ -317,7 +317,6 @@ export function BookingPage() {
     // if(dealerWithOS.includes(fr.dealer_name)){
     //   setDiscount(0)
     // }
-    console.log(fr);
     const dealerName = fr?.dealer_name || "";
     if (dealerWithOS.includes(dealerName)) {
       setDiscount(0);
