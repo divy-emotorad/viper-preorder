@@ -1,18 +1,28 @@
-import axios from 'axios';
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import axios from "axios";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 interface InventoryContextType {
   availableUnits: number;
   totalUnits: number;
+  blackUnits: number;
+  blueUnits: number
 }
 
-const InventoryContext = createContext<InventoryContextType | undefined>(undefined);
-
+const InventoryContext = createContext<InventoryContextType | undefined>(
+  undefined,
+);
 
 export function InventoryProvider({ children }: { children: ReactNode }) {
   const [totalUnits, setTotalUnits] = useState(null);
   const [availableUnits, setAvailableUnits] = useState(null);
-  
+  const [blueUnits, setBlueUnits] = useState(null);
+  const [blackUnits, setBlackUnits] = useState(null);
   useEffect(() => {
     const fetchInventory = async () => {
       try {
@@ -24,6 +34,9 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
         }
         setTotalUnits(res.data.total);
         setAvailableUnits(res.data.balance_qty);
+        setBlackUnits(res.data.black_balance_qty);
+        setBlueUnits(res.data.blue_balance_qty);
+        console.log(res)
       } catch (error) {
         console.error("Error fetching inventory:", error.message);
       }
@@ -31,11 +44,9 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
 
     fetchInventory();
 
-    setInterval(fetchInventory, 1 *60 *1000); // Fetch every 1 minute
-
+    setInterval(fetchInventory, 1 * 60 * 1000); // Fetch every 1 minute
   }, []);
 
-  
   const TOTAL_UNITS = totalUnits;
 
   return (
@@ -43,6 +54,8 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
       value={{
         availableUnits,
         totalUnits: TOTAL_UNITS,
+        blackUnits,
+        blueUnits
       }}
     >
       {children}
@@ -53,7 +66,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
 export function useInventory() {
   const context = useContext(InventoryContext);
   if (context === undefined) {
-    throw new Error('useInventory must be used within an InventoryProvider');
+    throw new Error("useInventory must be used within an InventoryProvider");
   }
   return context;
 }

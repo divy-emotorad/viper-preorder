@@ -33,7 +33,7 @@ import { toast } from "sonner";
 import { useInventory } from "../context/inventory-context";
 import viperImage from "../../assets/770e77c21b331603db955be2300f1c7fa0652347.png";
 import viperBlack from "../../assets/viperBlack.jpeg";
-import viperBlue from "../../assets/viperBlue.jpeg"; 
+import viperBlue from "../../assets/viperBlue.jpeg";
 import axios from "axios";
 import { Combobox } from "../components/ui/combobox";
 import { color } from "motion/react";
@@ -52,7 +52,7 @@ export function BookingPage() {
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [selectedBank, setSelectedBank] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const { availableUnits } = useInventory();
+  const { totalUnits, availableUnits, blackUnits, blueUnits } = useInventory();
   const [bookingId, setBookingId] = useState("");
   const [discount, setDiscount] = useState(2500);
   const [selectedColor, setSelectedColor] = useState<
@@ -146,6 +146,13 @@ export function BookingPage() {
 
     fetchWarrantyDealers();
   }, []);
+
+  useEffect(() => {
+    if (!blackUnits && totalUnits) {
+      setQuantityBlack(0);
+      setQuantityBlue(1);
+    }
+  }, [blackUnits]);
 
   const loadScript = (src) => {
     return new Promise((resolve) => {
@@ -450,7 +457,12 @@ export function BookingPage() {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-lg text-[#1d1d1b] mb-1">
-                      EMotorad Viper
+                      EMotorad Viper{"   "}
+                      {!blackUnits && totalUnits ? (
+                        <span className="text-red-600">[SOLD OUT]</span>
+                      ) : (
+                        ""
+                      )}
                     </h3>
                     <p className="text-sm text-gray-600 mb-4">Stealth Black</p>
 
@@ -461,40 +473,42 @@ export function BookingPage() {
                           ₹{unitPrice.toLocaleString("en-IN")}
                         </p>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <Label className="text-sm text-gray-600">
-                          Quantity:
-                        </Label>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={() => handleQuantityChangeBlack(-1)}
-                            disabled={quantityBlack <= 0}
-                          >
-                            <Minus className="h-4 w-4" />
-                          </Button>
-                          <Input
-                            type="text"
-                            value={quantityBlack}
-                            onChange={(e) => {
-                              const val = parseInt(e.target.value);
-                              if (val >= 0) setQuantityBlack(val);
-                            }}
-                            className="w-16 text-center"
-                            readOnly
-                          />
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={() => handleQuantityChangeBlack(1)}
-                          >
-                            <Plus className="h-4 w-4" />
-                          </Button>
+                      {blackUnits && totalUnits ? (
+                        <div className="flex items-center gap-3">
+                          <Label className="text-sm text-gray-600">
+                            Quantity:
+                          </Label>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => handleQuantityChangeBlack(-1)}
+                              disabled={quantityBlack <= 0}
+                            >
+                              <Minus className="h-4 w-4" />
+                            </Button>
+                            <Input
+                              type="text"
+                              value={quantityBlack}
+                              onChange={(e) => {
+                                const val = parseInt(e.target.value);
+                                if (val >= 0) setQuantityBlack(val);
+                              }}
+                              className="w-16 text-center"
+                              readOnly
+                            />
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => handleQuantityChangeBlack(1)}
+                            >
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
-                      </div>
+                      ):<></>}
                     </div>
                     {/* <div className="mt-4 pt-4 border-t border-gray-200">
                       <Label className="text-sm text-gray-600 mb-3 block">
@@ -544,7 +558,12 @@ export function BookingPage() {
                     <h3 className="font-semibold text-lg text-[#1d1d1b] mb-1">
                       EMotorad Viper
                     </h3>
-                    <p className="text-sm text-gray-600 mb-4">Apex Blue</p>
+                    <p className="text-sm text-gray-600 mb-1">Apex Blue</p>
+                    {!blackUnits && totalUnits && (
+                      <small className="text-red-600">
+                        Last Few Units Remaining
+                      </small>
+                    )}
 
                     <div className="flex flex-col md:flex-row md:items-center gap-2 justify-between">
                       <div>
