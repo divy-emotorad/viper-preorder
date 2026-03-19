@@ -47,7 +47,7 @@ interface DealerData {
 
 export function BookingPage() {
   const navigate = useNavigate();
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(0);
   const [quantityBlack, setQuantityBlack] = useState(1);
   const [quantityBlue, setQuantityBlue] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("upi");
@@ -516,7 +516,9 @@ export function BookingPage() {
                             </Button>
                           </div>
                         </div>
-                      ):<></>}
+                      ) : (
+                        <></>
+                      )}
                     </div>
                     {/* <div className="mt-4 pt-4 border-t border-gray-200">
                       <Label className="text-sm text-gray-600 mb-3 block">
@@ -564,8 +566,14 @@ export function BookingPage() {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-lg text-[#1d1d1b] mb-1">
-                      EMotorad Viper
+                      EMotorad Viper {" "}
+                      {!blueUnits && totalUnits ? (
+                        <span className="text-red-600">[SOLD OUT]</span>
+                      ) : (
+                        ""
+                      )}
                     </h3>
+
                     <p className="text-sm text-gray-600 mb-1">Apex Blue</p>
                     {!blackUnits && totalUnits && (
                       <small className="text-red-600">
@@ -580,7 +588,7 @@ export function BookingPage() {
                           ₹{unitPrice.toLocaleString("en-IN")}
                         </p>
                       </div>
-                      <div className="flex items-center gap-3">
+                      {blueUnits && totalUnits ?<div className="flex items-center gap-3">
                         <Label className="text-sm text-gray-600">
                           Quantity:
                         </Label>
@@ -613,7 +621,7 @@ export function BookingPage() {
                             <Plus className="h-4 w-4" />
                           </Button>
                         </div>
-                      </div>
+                      </div>:<></>}
                     </div>
                     {/* <div className="mt-4 pt-4 border-t border-gray-200">
                       <Label className="text-sm text-gray-600 mb-3 block">
@@ -942,7 +950,7 @@ export function BookingPage() {
                       formData.pincode &&
                       formData.city &&
                       formData.state &&
-                      quantityBlack + quantityBlue >= 1
+                      quantityBlack + quantityBlue > 1
                     )
                   }
                   className="w-full bg-[#dfb001] hover:bg-[#c99e00] text-[#1d1d1b] py-6 shadow-lg hover:shadow-xl transition-all font-bold"

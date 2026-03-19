@@ -6,17 +6,19 @@ import img221 from "../../assets/d72eb52972174090143369260b265678ed408dd3.png";
 import viperLogo from "../../assets/28cbcb73e127db22c133548b83c84284d2e176f3.png";
 
 const svgPaths = {
-  p1ab85e00: "M9.99267 18.3199C14.5917 18.3199 18.3199 14.5917 18.3199 9.99267C18.3199 5.39367 14.5917 1.66545 9.99267 1.66545C5.39367 1.66545 1.66545 5.39367 1.66545 9.99267C1.66545 14.5917 5.39367 18.3199 9.99267 18.3199Z",
+  p1ab85e00:
+    "M9.99267 18.3199C14.5917 18.3199 18.3199 14.5917 18.3199 9.99267C18.3199 5.39367 14.5917 1.66545 9.99267 1.66545C5.39367 1.66545 1.66545 5.39367 1.66545 9.99267C1.66545 14.5917 5.39367 18.3199 9.99267 18.3199Z",
   p157a4b40: "M9.99267 4.99634V9.99267L13.3236 11.6581",
-  clockCircle: "M18.2489 34.8983C27.4442 34.8983 34.8983 27.4442 34.8983 18.2489C34.8983 9.05369 27.4442 1.59951 18.2489 1.59951C9.05369 1.59951 1.59951 9.05369 1.59951 18.2489C1.59951 27.4442 9.05369 34.8983 18.2489 34.8983Z",
-  clockHand: "M1.59951 1.59951V11.5891L8.25935 14.919"
+  clockCircle:
+    "M18.2489 34.8983C27.4442 34.8983 34.8983 27.4442 34.8983 18.2489C34.8983 9.05369 27.4442 1.59951 18.2489 1.59951C9.05369 1.59951 1.59951 9.05369 1.59951 18.2489C1.59951 27.4442 9.05369 34.8983 18.2489 34.8983Z",
+  clockHand: "M1.59951 1.59951V11.5891L8.25935 14.919",
 };
 
 export function HeroSection() {
   const navigate = useNavigate();
 
   const handlePreBook = () => {
-      navigate('/booking');
+    navigate("/booking");
   };
 
   return (
@@ -149,10 +151,14 @@ export function HeroSection() {
             {/* Pre-Book Button (Button1) */}
             <button
               onClick={handlePreBook}
+              disabled
               className="order-3 lg:order-2 col-span-2 w-full lg:max-w-[320px] lg:mx-0 bg-[#dfb001] hover:bg-[#c99e00] text-[#1d1d1b] font-medium text-base lg:text-lg py-3 lg:py-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 mt-2 lg:mt-0"
             >
-              Pre-Book Now →
+              Pre-order Period Over
             </button>
+            <p className="lg:order-2 col-span-2 display-none d-md-block">
+              Contact RMs to place further orders.
+            </p>
           </div>
 
           {/* Right Column: Bike Image & Floating Tags */}
