@@ -55,7 +55,7 @@ export function BookingPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const { totalUnits, availableUnits, blackUnits, blueUnits } = useInventory();
   const [bookingId, setBookingId] = useState("");
-  const [discount, setDiscount] = useState(2500);
+  const [discount, setDiscount] = useState(0);
   const [selectedColor, setSelectedColor] = useState<
     "Stealth Black" | "Apex Blue"
   >("Stealth Black");
@@ -433,8 +433,8 @@ export function BookingPage() {
       <Header />
 
       {/* Live Selling Counter Popups */}
-      <LiveSellingCounter />
-      <LiveSellingCounterMobile />
+      {/* <LiveSellingCounter />
+      <LiveSellingCounterMobile /> */}
 
       <main className="py-12">
         <div className="max-w-[1000px] mx-auto px-6">
@@ -465,14 +465,25 @@ export function BookingPage() {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-lg text-[#1d1d1b] mb-1">
-                      EMotorad Viper{"   "}
+                      EMotorad Viper
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Stealth Black{"   "}
                       {!blackUnits && totalUnits ? (
-                        <span className="text-red-600">[SOLD OUT]</span>
+                        <span
+                          className="text-white bg-red-600 p-1"
+                          style={{
+                            borderRadius: "5px",
+                            fontSize: "0.7em",
+                            fontWeight: 600,
+                          }}
+                        >
+                          SOLD OUT
+                        </span>
                       ) : (
                         ""
                       )}
-                    </h3>
-                    <p className="text-sm text-gray-600 mb-4">Stealth Black</p>
+                    </p>
 
                     <div className="flex flex-col md:flex-row md:items-center gap-2 justify-between">
                       <div>
@@ -566,20 +577,26 @@ export function BookingPage() {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-lg text-[#1d1d1b] mb-1">
-                      EMotorad Viper {" "}
+                      EMotorad Viper{" "}
+                    </h3>
+
+                    <p className="text-sm text-gray-600 mb-1">
+                      Apex Blue{"   "}
                       {!blueUnits && totalUnits ? (
-                        <span className="text-red-600">[SOLD OUT]</span>
+                        <span
+                          className="text-white bg-red-600 p-1"
+                          style={{
+                            borderRadius: "5px",
+                            fontSize: "0.7em",
+                            fontWeight: 600,
+                          }}
+                        >
+                          SOLD OUT
+                        </span>
                       ) : (
                         ""
                       )}
-                    </h3>
-
-                    <p className="text-sm text-gray-600 mb-1">Apex Blue</p>
-                    {!blackUnits && totalUnits && (
-                      <small className="text-red-600">
-                        Last Few Units Remaining
-                      </small>
-                    )}
+                    </p>
 
                     <div className="flex flex-col md:flex-row md:items-center gap-2 justify-between">
                       <div>
@@ -588,40 +605,44 @@ export function BookingPage() {
                           ₹{unitPrice.toLocaleString("en-IN")}
                         </p>
                       </div>
-                      {blueUnits && totalUnits ?<div className="flex items-center gap-3">
-                        <Label className="text-sm text-gray-600">
-                          Quantity:
-                        </Label>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={() => handleQuantityChangeBlue(-1)}
-                            disabled={quantityBlue <= 0}
-                          >
-                            <Minus className="h-4 w-4" />
-                          </Button>
-                          <Input
-                            type="text"
-                            value={quantityBlue}
-                            onChange={(e) => {
-                              const val = parseInt(e.target.value);
-                              if (val >= 0) setQuantityBlue(val);
-                            }}
-                            className="w-16 text-center"
-                            readOnly
-                          />
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={() => handleQuantityChangeBlue(1)}
-                          >
-                            <Plus className="h-4 w-4" />
-                          </Button>
+                      {blueUnits && totalUnits ? (
+                        <div className="flex items-center gap-3">
+                          <Label className="text-sm text-gray-600">
+                            Quantity:
+                          </Label>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => handleQuantityChangeBlue(-1)}
+                              disabled={quantityBlue <= 0}
+                            >
+                              <Minus className="h-4 w-4" />
+                            </Button>
+                            <Input
+                              type="text"
+                              value={quantityBlue}
+                              onChange={(e) => {
+                                const val = parseInt(e.target.value);
+                                if (val >= 0) setQuantityBlue(val);
+                              }}
+                              className="w-16 text-center"
+                              readOnly
+                            />
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => handleQuantityChangeBlue(1)}
+                            >
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
-                      </div>:<></>}
+                      ) : (
+                        <></>
+                      )}
                     </div>
                     {/* <div className="mt-4 pt-4 border-t border-gray-200">
                       <Label className="text-sm text-gray-600 mb-3 block">
@@ -950,7 +971,8 @@ export function BookingPage() {
                       formData.pincode &&
                       formData.city &&
                       formData.state &&
-                      quantityBlack + quantityBlue > 1
+                      blackUnits &&
+                      blueUnits
                     )
                   }
                   className="w-full bg-[#dfb001] hover:bg-[#c99e00] text-[#1d1d1b] py-6 shadow-lg hover:shadow-xl transition-all font-bold"

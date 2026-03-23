@@ -62,9 +62,9 @@ export function HeroSection() {
           </p>
 
           {/* Live Sales Widget - Static Position */}
-          <div className="hidden md:flex mt-8 justify-center mb-8 relative z-20">
+          {/* <div className="hidden md:flex mt-8 justify-center mb-8 relative z-20">
             <LiveSellingCounter />
-          </div>
+          </div> */}
         </div>
 
         {/* Layout Grid: Cards Left, Bike Center/Right */}
@@ -77,21 +77,21 @@ export function HeroSection() {
                 Pre-Booking Price
               </p>
               <div className="flex flex-col mb-1 lg:mb-4">
-                <span className="text-gray-400 text-sm lg:text-2xl font-bold line-through">
+                {/* <span className="text-gray-400 text-sm lg:text-2xl font-bold line-through">
+                  ₹55,499
+                </span> */}
+                <span className="text-[#1d1d1b] text-xl lg:text-4xl font-bold">
                   ₹55,499
                 </span>
-                <span className="text-[#1d1d1b] text-xl lg:text-4xl font-bold">
-                  ₹52,999
-                </span>
               </div>
-              <div className="flex flex-col lg:flex-row items-start lg:items-center gap-1 lg:gap-2">
+              {/* <div className="flex flex-col lg:flex-row items-start lg:items-center gap-1 lg:gap-2">
                 <span className="bg-[#dfb001]/20 text-[#7a6000] text-[10px] lg:text-xs font-bold px-1.5 py-0.5 lg:px-2 lg:py-1 rounded">
                   Save ₹2,500
                 </span>
                 <span className="text-gray-500 text-[9px] lg:text-xs whitespace-nowrap">
                   Exclusive dealer rate
                 </span>
-              </div>
+              </div> */}
             </div>
 
             <div className="flex flex-col gap-0.5 lg:gap-[7px] hidden lg:block">
@@ -151,14 +151,10 @@ export function HeroSection() {
             {/* Pre-Book Button (Button1) */}
             <button
               onClick={handlePreBook}
-              disabled
               className="order-3 lg:order-2 col-span-2 w-full lg:max-w-[320px] lg:mx-0 bg-[#dfb001] hover:bg-[#c99e00] text-[#1d1d1b] font-medium text-base lg:text-lg py-3 lg:py-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 mt-2 lg:mt-0"
             >
-              Pre-order Period Over
+              Pre-order
             </button>
-            <p className="lg:order-2 col-span-2 display-none d-md-block">
-              Contact RMs to place further orders.
-            </p>
           </div>
 
           {/* Right Column: Bike Image & Floating Tags */}

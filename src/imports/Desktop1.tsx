@@ -530,7 +530,7 @@ function Paragraph12() {
 function Paragraph13() {
   return (
     <div className="absolute h-[40.005px] left-[109.99px] top-0 w-[147.795px]" data-name="Paragraph">
-      <p className="absolute font-['Inter:Bold',sans-serif] font-bold leading-[40px] left-0 not-italic text-[#014dab] text-[36px] top-[-0.2px]">₹52,999</p>
+      <p className="absolute font-['Inter:Bold',sans-serif] font-bold leading-[40px] left-0 not-italic text-[#014dab] text-[36px] top-[-0.2px]">₹55,499</p>
     </div>
   );
 }
