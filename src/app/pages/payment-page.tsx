@@ -99,7 +99,7 @@ export function PaymentPage() {
         headers: { "Content-Type": "application/json" },
       };
       const res = await axios.post(
-        `https://www.emotorad.com/api/payment/preorder/viper?id=${bookingData.databaseId}`,
+        `https://d2c-storefront.emotorad.com/api/payment/preorder/viper?id=${bookingData.databaseId}`,
         {
           utrNumber: utrNumber.trim(),
         },

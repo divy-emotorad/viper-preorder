@@ -27,7 +27,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
     const fetchInventory = async () => {
       try {
         const res = await axios.get(
-          "https://www.emotorad.com/api/dealer/viper/inventory",
+          "https://d2c-storefront.emotorad.com/api/dealer/viper/inventory",
         );
         if (!res.data) {
           return;

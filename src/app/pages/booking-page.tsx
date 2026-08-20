@@ -130,7 +130,7 @@ export function BookingPage() {
       try {
         setIsLoadingFranchises(true);
         const warrantyResponse = await axios.get<DealerData[]>(
-          "https://www.emotorad.com/api/oms/franchise?distributor=false",
+          "https://d2c-storefront.emotorad.com/api/oms/franchise?distributor=false",
         );
 
         if (warrantyResponse.data) {
@@ -174,7 +174,7 @@ export function BookingPage() {
     if (formData.pincode.length === 6) {
       setIsLoadingPincode(true);
       axios
-        .post(`https://www.emotorad.com/api/oms/pincode`, {
+        .post(`https://d2c-storefront.emotorad.com/api/oms/pincode`, {
           pincode: formData.pincode,
         })
         .then((response) => {
@@ -387,7 +387,7 @@ export function BookingPage() {
         },
       };
       const res = await axios.post(
-        "https://www.emotorad.com/api/payment/preorder/viper",
+        "https://d2c-storefront.emotorad.com/api/payment/preorder/viper",
         payload,
         config,
       );
