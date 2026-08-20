@@ -38,7 +38,7 @@ function Text1() {
   return (
     <div className="h-[40.005px] relative shrink-0 w-[269.819px]" data-name="Text">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid relative size-full">
-        <p className="absolute font-['Inter:Bold',sans-serif] font-bold leading-[40px] left-0 not-italic text-[#1d1d1b] text-[36px] top-[-2.4px]">₹52,999</p>
+        <p className="absolute font-['Inter:Bold',sans-serif] font-bold leading-[40px] left-0 not-italic text-[#1d1d1b] text-[36px] top-[-2.4px]">₹55,499</p>
       </div>
     </div>
   );

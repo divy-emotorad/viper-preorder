@@ -18,9 +18,9 @@ export function HomePage() {
       <Header />
       
       {/* Mobile Live Selling Counter - Shows on scroll */}
-      {showMobileCounter && (
+      {/* {showMobileCounter && (
         <LiveSellingCounter className="md:hidden" />
-      )}
+      )} */}
       
       <main>
         <HeroSection />
