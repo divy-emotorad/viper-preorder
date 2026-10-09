@@ -971,8 +971,8 @@ export function BookingPage() {
                       formData.pincode &&
                       formData.city &&
                       formData.state &&
-                      blackUnits &&
-                      blueUnits
+                      (blackUnits > 0 || blueUnits > 0) &&
+                      quantityBlack + quantityBlue > 0
                     )
                   }
                   className="w-full bg-[#dfb001] hover:bg-[#c99e00] text-[#1d1d1b] py-6 shadow-lg hover:shadow-xl transition-all font-bold"
